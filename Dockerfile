@@ -6,7 +6,7 @@ WORKDIR /app
 
 COPY package.json ./
 RUN corepack enable && corepack prepare pnpm@11 --activate
-RUN pnpm install
+RUN pnpm install --ignore-scripts
 
 FROM base AS builder
 WORKDIR /app
@@ -15,7 +15,7 @@ COPY . .
 
 ENV NODE_ENV=production
 RUN corepack enable && corepack prepare pnpm@11 --activate
-RUN pnpm build
+RUN pnpm rebuild sharp 2>/dev/null; pnpm build
 
 FROM base AS runner
 WORKDIR /app
