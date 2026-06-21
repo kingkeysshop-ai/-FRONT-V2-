@@ -9,11 +9,19 @@ RUN corepack enable && corepack prepare pnpm@11 --activate
 RUN pnpm install --ignore-scripts
 
 FROM base AS builder
+ARG NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY
+ARG MEDUSA_BACKEND_URL
+ARG NEXT_PUBLIC_MEDUSA_BACKEND_URL
+ARG NEXT_PUBLIC_BASE_URL
+ENV NODE_ENV=production
+ENV NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY=${NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY}
+ENV MEDUSA_BACKEND_URL=${MEDUSA_BACKEND_URL}
+ENV NEXT_PUBLIC_MEDUSA_BACKEND_URL=${NEXT_PUBLIC_MEDUSA_BACKEND_URL}
+ENV NEXT_PUBLIC_BASE_URL=${NEXT_PUBLIC_BASE_URL}
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-ENV NODE_ENV=production
 RUN corepack enable && corepack prepare pnpm@11 --activate
 RUN pnpm rebuild sharp 2>/dev/null; pnpm build
 
