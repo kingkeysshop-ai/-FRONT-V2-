@@ -23,7 +23,7 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 RUN corepack enable && corepack prepare pnpm@11 --activate
-RUN pnpm rebuild sharp 2>/dev/null; pnpm build
+RUN pnpm build
 
 FROM base AS runner
 WORKDIR /app
