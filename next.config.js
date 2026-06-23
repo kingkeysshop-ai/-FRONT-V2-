@@ -44,7 +44,6 @@ const securityHeaders = [
 ]
 
 module.exports = {
-  output: "standalone",
   transpilePackages: ["@medusajs/ui"],
   eslint: {
     ignoreDuringBuilds: true,
