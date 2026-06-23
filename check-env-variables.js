@@ -34,24 +34,38 @@ function checkEnvVariables() {
   })
 
   if (missingRequired.length > 0) {
-    console.error(
-      c.red.bold("\n🚫 Error: Missing required environment variables\n")
-    )
-
-    missingRequired.forEach(function (env) {
-      console.error(c.yellow(`  ${c.bold(env.key)}`))
-      if (env.description) {
-        console.error(c.dim(`    ${env.description}\n`))
-      }
-    })
-
-    console.error(
-      c.yellow(
-        "\nPlease set these variables in your environment before building/starting the application.\n"
+    if (process.env.NEXT_PHASE === "phase-production-build") {
+      console.warn(
+        c.yellow.bold("\n⚠️  Warning: Missing recommended environment variables for build\n")
       )
-    )
 
-    process.exit(1)
+      missingRequired.forEach(function (env) {
+        console.warn(c.yellow(`  ${c.bold(env.key)}`))
+      })
+
+      console.warn(
+        c.yellow("\nProceeding with build. Set these at runtime.\n")
+      )
+    } else {
+      console.error(
+        c.red.bold("\n🚫 Error: Missing required environment variables\n")
+      )
+
+      missingRequired.forEach(function (env) {
+        console.error(c.yellow(`  ${c.bold(env.key)}`))
+        if (env.description) {
+          console.error(c.dim(`    ${env.description}\n`))
+        }
+      })
+
+      console.error(
+        c.yellow(
+          "\nPlease set these variables in your environment before building/starting the application.\n"
+        )
+      )
+
+      process.exit(1)
+    }
   }
 
   if (missingRecommended.length > 0) {
