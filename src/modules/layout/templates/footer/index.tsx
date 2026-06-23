@@ -24,7 +24,7 @@ export default async function Footer() {
         <div className="flex flex-col gap-y-10 lg:flex-row items-start justify-between pb-12 border-b border-[#2a2a2a]">
 
           {/* Logo y descripcion */}
-          <div className="flex flex-col gap-4 max-w-xs">
+          <div className="flex flex-col gap-4 max-w-sm">
             <LocalizedClientLink href="/" className="text-2xl font-black tracking-normal uppercase">
               <span className="text-white">KING</span>
               <span className="text-[#facc15]"> KEYS</span>
