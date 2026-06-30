@@ -6,10 +6,13 @@ export const metadata: Metadata = {
   description: "Recupera el acceso a tu cuenta de KING KEYS.",
 }
 
-export default function ForgotPasswordPage() {
+export default async function ForgotPasswordPage(props: {
+  params: Promise<{ countryCode: string }>
+}) {
+  const { countryCode } = await props.params
   return (
     <div className="min-h-[60vh] flex items-center justify-center py-12">
-      <ForgotPassword />
+      <ForgotPassword countryCode={countryCode} />
     </div>
   )
 }

@@ -18,6 +18,7 @@ import {
   setAuthToken,
   setPendingCustomer,
 } from "./cookies"
+import { sendEmail, welcomeEmailHtml } from "@lib/email-templates"
 
 export type CustomerAuthState =
   | { state: "error"; error: string }
@@ -216,6 +217,13 @@ async function completeLogin(
     }
 
     await removePendingCustomer()
+
+    const welcomeName = pending?.first_name || email.split("@")[0]
+    sendEmail({
+      to: email,
+      subject: "Bienvenido a KING KEYS - El Reino Digital",
+      html: welcomeEmailHtml(welcomeName),
+    })
   }
 
   await setAuthToken(token)
@@ -382,17 +390,18 @@ export const updateCustomerAddress = async (
 
 // ─── Generar token de recuperación de contraseña ───────────────────────────────
 export async function generatePasswordToken(
-  _currentState: { error: string | null; submitted: boolean },
+  _currentState: { error: string | null; submitted: boolean; countryCode?: string },
   formData: FormData
 ): Promise<{ error: string | null; submitted: boolean }> {
   const email = formData.get("email") as string
+  const countryCode = formData.get("countryCode") as string || "co"
   if (!email) return { error: "El correo electrónico es obligatorio", submitted: true }
 
   try {
     const res = await fetch("/api/resend/send-recovery", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email }),
+      body: JSON.stringify({ email, countryCode }),
     })
 
     const data = await res.json()

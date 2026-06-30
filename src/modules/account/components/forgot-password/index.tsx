@@ -8,8 +8,16 @@ import LocalizedClientLink from "@modules/common/components/localized-client-lin
 import { useActionState } from "react"
 import Lock from "@modules/common/icons/lock"
 
-const ForgotPassword = () => {
-  const [state, formAction] = useActionState(generatePasswordToken, { error: null, submitted: false })
+type Props = {
+  countryCode?: string
+}
+
+const ForgotPassword = ({ countryCode = "co" }: Props) => {
+  const [state, formAction] = useActionState(generatePasswordToken, {
+    error: null,
+    submitted: false,
+    countryCode,
+  } as { error: string | null; submitted: boolean; countryCode: string })
   const isSuccess = state.submitted && !state.error
 
   return (
@@ -31,6 +39,7 @@ const ForgotPassword = () => {
         </div>
       ) : (
         <form className="w-full" action={formAction}>
+          <input type="hidden" name="countryCode" value={countryCode} />
           <div className="flex flex-col w-full gap-y-3">
             <Input
               label="Correo electrónico"
