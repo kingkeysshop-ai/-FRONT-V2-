@@ -411,8 +411,8 @@ export async function generatePasswordToken(
     }
 
     return { error: null, submitted: true }
-  } catch (error: any) {
-    console.error("Error al generar token de recuperación:", error.message)
+  } catch (error: unknown) {
+    console.error("Error al generar token de recuperación:", error instanceof Error ? error.message : String(error))
     return { error: "No se pudo enviar el correo de recuperación. Verifica el email e intenta de nuevo.", submitted: true }
   }
 }
@@ -445,8 +445,8 @@ export async function resetPassword(
     }
 
     return { error: null, submitted: true }
-  } catch (error: any) {
-    console.error("Error al restablecer contraseña:", error.message)
+  } catch (error: unknown) {
+    console.error("Error al restablecer contraseña:", error instanceof Error ? error.message : String(error))
     return { error: "Error al restablecer la contraseña. El token puede haber expirado.", submitted: true }
   }
 }

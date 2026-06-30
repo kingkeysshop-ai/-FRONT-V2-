@@ -37,8 +37,8 @@ export async function POST(req: NextRequest) {
 
     console.log(`[Resend] Recovery email sent to ${email}`)
     return NextResponse.json({ ok: true, message: "Correo enviado" })
-  } catch (err: any) {
-    console.error("[Resend] send-recovery error:", err.message)
+  } catch (err: unknown) {
+    console.error("[Resend] send-recovery error:", err instanceof Error ? err.message : String(err))
     return NextResponse.json({ error: "Error interno" }, { status: 500 })
   }
 }

@@ -1,6 +1,7 @@
 "use client"
 
-import { useActionState } from "react"
+import { useActionState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import Input from "@modules/common/components/input"
 import { LOGIN_VIEW } from "@modules/account/templates/login-template"
 import ErrorMessage from "@modules/checkout/components/error-message"
@@ -10,10 +11,18 @@ import { signup } from "@lib/data/customer"
 
 type Props = {
   setCurrentView: (view: LOGIN_VIEW) => void
+  redirectTo?: string
 }
 
-const Register = ({ setCurrentView }: Props) => {
+const Register = ({ setCurrentView, redirectTo = "/" }: Props) => {
   const [message, formAction] = useActionState(signup, null)
+  const router = useRouter()
+
+  useEffect(() => {
+    if (message?.state === "success") {
+      router.push(redirectTo)
+    }
+  }, [message, redirectTo, router])
 
   return (
     <div className="w-full flex flex-col items-center" data-testid="register-page">

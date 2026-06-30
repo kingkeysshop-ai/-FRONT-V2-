@@ -18,15 +18,15 @@ async function getAdminToken(): Promise<string> {
   })
 
   if (!res.ok) {
-    const err = await res.json().catch(() => ({}))
-    throw new Error(`Error al autenticar admin: ${err.message || res.status}`)
+    const err: { message?: string } = await res.json().catch(() => ({}))
+    throw new Error(`Error al autenticar admin: ${err.message || String(res.status)}`)
   }
 
   const data = await res.json()
   return data.token || data.access_token
 }
 
-async function getCustomerByEmail(adminToken: string, email: string): Promise<any> {
+async function getCustomerByEmail(adminToken: string, email: string): Promise<Record<string, unknown> | null> {
   const res = await fetch(
     `${MEDUSA_BACKEND_URL}/admin/customers?email=${encodeURIComponent(email)}&limit=1`,
     { headers: { Authorization: `Bearer ${adminToken}` } }
@@ -88,7 +88,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "No se encontro una cuenta con este email" }, { status: 404 })
     }
 
-    const updated = await updateCustomerPassword(adminToken, customer.id, password)
+    const customerId = typeof customer?.id === "string" ? customer.id : ""
+    const updated = await updateCustomerPassword(adminToken, customerId, password)
 
     if (!updated) {
       return NextResponse.json({ error: "Error al actualizar la contrasena en el servidor" }, { status: 500 })
@@ -98,8 +99,9 @@ export async function POST(req: NextRequest) {
     console.log(`[Resend] Password reset successful for ${email}`)
 
     return NextResponse.json({ ok: true, message: "Contrasena actualizada exitosamente" })
-  } catch (err: any) {
-    console.error("[Resend] reset-password error:", err.message)
-    return NextResponse.json({ error: err.message || "Error interno" }, { status: 500 })
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : "Error interno"
+    console.error("[Resend] reset-password error:", msg)
+    return NextResponse.json({ error: msg }, { status: 500 })
   }
 }

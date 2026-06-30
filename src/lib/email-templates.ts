@@ -217,7 +217,7 @@ export async function sendEmail(args: {
     }
 
     return { success: true }
-  } catch (err: any) {
-    return { success: false, error: err.message || "Unknown error sending email" }
+  } catch (err: unknown) {
+    return { success: false, error: err instanceof Error ? err.message : "Unknown error sending email" }
   }
 }
