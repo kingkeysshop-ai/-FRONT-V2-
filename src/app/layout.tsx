@@ -33,13 +33,13 @@ export const metadata: Metadata = {
     siteName: "King Keys",
     title: "KING KEYS - Claves Digitales al Instante",
     description: "El Reino Digital — Licencias originales para Windows, Office, Xbox, PlayStation y más. Entrega inmediata, mejor precio garantizado.",
-    images: [{ url: 'https://minio.cfynet.xyz/medusa-uploads/svg.jpg', width: 1600, height: 900, alt: 'King Keys - Claves Digitales al Instante' }],
+    images: [{ url: '/og-image.svg', width: 1600, height: 900, alt: 'King Keys - Claves Digitales al Instante' }],
   },
   twitter: {
     card: "summary_large_image",
     title: "KING KEYS - Claves Digitales al Instante",
     description: "El Reino Digital — Licencias originales al mejor precio. Entrega inmediata.",
-    images: ['https://minio.cfynet.xyz/medusa-uploads/svg.jpg'],
+    images: ['/og-image.svg'],
   },
   robots: {
     index: true,
