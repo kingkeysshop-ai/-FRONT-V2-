@@ -434,11 +434,23 @@ function ParticleCanvas() {
       animId = requestAnimationFrame(draw)
     }
 
-    function cleanup() {
-      const now = Date.now()
-      particles = particles.filter((p) => now - p.born < 30000)
-    }
-    const cleanupInterval = setInterval(cleanup, 5000)
+    const spawnInterval = setInterval(() => {
+      if (particles.length < 80) {
+        particles.push({
+          x: Math.random() * canvas!.width,
+          y: Math.random() * canvas!.height,
+          vx: 0,
+          vy: 0,
+          baseX: Math.random() * canvas!.width,
+          baseY: Math.random() * canvas!.height,
+          size: Math.random() * 2.5 + 1,
+          alpha: Math.random() * 0.5 + 0.3,
+          driftX: (particles.length % 3 - 1) * (Math.random() * 0.08 + 0.04),
+          driftY: (particles.length % 5 - 2) * (Math.random() * 0.06 + 0.02),
+          born: Date.now(),
+        })
+      }
+    }, 2000)
 
     function onClick(e: MouseEvent) {
       const rect = canvas!.getBoundingClientRect()
@@ -496,7 +508,7 @@ function ParticleCanvas() {
 
     return () => {
       cancelAnimationFrame(animId)
-      clearInterval(cleanupInterval)
+      clearInterval(spawnInterval)
       observer.disconnect()
       canvas.removeEventListener("click", onClick)
       canvas.removeEventListener("mousemove", onMove)
