@@ -431,26 +431,19 @@ function ParticleCanvas() {
         }
       }
 
-      animId = requestAnimationFrame(draw)
+      if (visible) animId = requestAnimationFrame(draw)
     }
 
-    const spawnInterval = setInterval(() => {
-      if (particles.length < 80) {
-        particles.push({
-          x: Math.random() * canvas!.width,
-          y: Math.random() * canvas!.height,
-          vx: 0,
-          vy: 0,
-          baseX: Math.random() * canvas!.width,
-          baseY: Math.random() * canvas!.height,
-          size: Math.random() * 2.5 + 1,
-          alpha: Math.random() * 0.5 + 0.3,
-          driftX: (particles.length % 3 - 1) * (Math.random() * 0.08 + 0.04),
-          driftY: (particles.length % 5 - 2) * (Math.random() * 0.06 + 0.02),
-          born: Date.now(),
-        })
-      }
-    }, 2000)
+    let visible = true
+    const visibilityObserver = new IntersectionObserver(
+      ([entry]) => {
+        visible = entry.isIntersecting
+        if (visible) draw()
+        else cancelAnimationFrame(animId)
+      },
+      { threshold: 0 },
+    )
+    visibilityObserver.observe(canvas)
 
     function onClick(e: MouseEvent) {
       const rect = canvas!.getBoundingClientRect()
@@ -497,8 +490,8 @@ function ParticleCanvas() {
 
     function onLeave() { mouseActive = false }
 
-    const observer = new ResizeObserver(() => resize())
-    observer.observe(parent)
+    const resizeObserver = new ResizeObserver(() => resize())
+    resizeObserver.observe(parent)
 
     init()
     draw()
@@ -508,8 +501,8 @@ function ParticleCanvas() {
 
     return () => {
       cancelAnimationFrame(animId)
-      clearInterval(spawnInterval)
-      observer.disconnect()
+      visibilityObserver.disconnect()
+      resizeObserver.disconnect()
       canvas.removeEventListener("click", onClick)
       canvas.removeEventListener("mousemove", onMove)
       canvas.removeEventListener("mouseleave", onLeave)
